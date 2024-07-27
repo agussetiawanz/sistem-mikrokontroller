@@ -1,0 +1,13 @@
+body {
+    font-family: Arial, sans-serif;
+}
+#app {
+    width: 600px;
+    margin: 0 auto;
+}
+h1, h2 {
+    text-align: center;
+}
+#relay-control, #sensor-data {
+    margin: 20px 0;
+}

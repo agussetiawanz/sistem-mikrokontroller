@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smarthome Dashboard</title>
+    <link rel="stylesheet" href="/smarthome-restapi/styles.css">
+</head>
+<body>
+    <div id="app">
+        <h1>Smarthome Dashboard</h1>
+        <div id="relay-control">
+            <h2>Relay Control</h2>
+            <button onclick="toggleRelay(1)">Toggle Relay 1</button>
+            <button onclick="toggleRelay(2)">Toggle Relay 2</button>
+        </div>
+        <div id="sensor-data">
+            <h2>Sensor Data</h2>
+            <ul id="sensor-list"></ul>
+        </div>
+    </div>
+    <script src="/smarthome-restapi/scripts.js"></script>
+</body>
+</html>
