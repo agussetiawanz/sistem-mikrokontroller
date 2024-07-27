@@ -263,8 +263,8 @@ void loop()
 
 ### Demo Proyek Smarthome dengan RESTful API
 <ul>
-  <li>Github: <a href="">Github</a></li>
-  <li>Youtube: <a href="">Youtube</a></li>
+  <li>Github: <a href="https://github.com/ages96/sistem-mikrokontroller/tree/master/smarthome-restapi">Github</a></li>
+  <li>Youtube: <a href="https://www.youtube.com/watch?v=HumQUj3Oky8">Youtube</a></li>
 </ul>
 
 ## Anggota 3 : Proyek Smarthome dengan MQTT
