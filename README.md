@@ -273,12 +273,15 @@ void loop()
 
 **1. EMQX sebagai MQTT Broker**
     -Instal dan konfigurasikan EMQX sebagai broker MQTT.
+    
 **2. Tampilan Website dengan HTML, CSS, dan JS:**
     -Buat halaman web yang menggunakan HTML, CSS, dan JS untuk berinteraksi dengan brokerMQTT.
     -Buat tampilan untuk mengendalikan relay dan menampilkan data sensor.
+    
 **3. Relay 2 Channel untuk Menyalakan LED:**
     -Hubungkan relay 2 channel ke mikrokontroller.
     -Buat skema rangkaian untuk menghubungkan relay ke LED.
+    
 **4. Sensor Bebas:**
     -Pilih sensor lain untuk digunakan (misalnya, sensor jarak atau sensor cahaya).
     -Hubungkan sensor tersebut ke mikrokontroller dan baca datanya.
@@ -299,7 +302,7 @@ void loop()
 
 ### 2. Tampilan Website dengan HTML, CSS, dan JS
 
-**<HTML:/smarthome-restapi/index.html>**
+**<HTML:/smarthome-mqtt/index.html>**
 
 <html>
 <head>
@@ -315,7 +318,7 @@ void loop()
 </body>
 </html>
 
-**CSS:/smarthome-restapi/style.css**
+**CSS:/smarthome-mqtt/style.css**
 
 body {
     font-family: Arial, sans-serif;
@@ -333,7 +336,7 @@ button {
     margin-top: 20px;
 }
 
-**JS:/smarthome-restapi/script.js**
+**JS:/smarthome-mqtt/script.js**
 
 const brokerUrl = 'ws://your-mqtt-broker-url:port';
 const clientId = 'clientId-' + Math.random().toString(16).substr(2, 8);
@@ -360,7 +363,86 @@ client.onMessageArrived = (message) => {
     }
 };
 
-**Arduino : Wowki https://wokwi.com/projects/**
+**Arduino : Wowki https://wokwi.com/projects smarthome-mqtt/**
+#include <WiFi.h>
+#include <MQTT.h>
+
+const char ssid[] = "Wokwi-GUEST";
+const char pass[] = "";
+
+WiFiClient net;
+MQTTClient client;
+
+unsigned long lastMillis = 0;
+
+int count = 0;
+
+void connect() {
+  Serial.print("checking wifi...");
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.print(".");
+    delay(1000);
+  }
+
+  Serial.print("\nconnecting...");
+  while (!client.connect("arduino", "public", "public")) {
+    Serial.print(".");
+    delay(1000);
+  }
+
+  Serial.println("\nconnected!");
+
+  client.subscribe("koalawan/iot/kontak1");
+  client.subscribe("koalawan/iot/kontak2");
+  client.subscribe("koalawan/iot/count");
+  client.subscribe("koalawan/iot/temp");
+  client.subscribe("koalawan/iot/humd");
+}
+
+void messageReceived(String &topic, String &payload) {
+  Serial.println(topic + ": " + payload);
+  if (topic == "koalawan/iot/kontak1") {
+    Serial.println("LED1 " + payload);
+    digitalWrite(19, payload.toInt());
+  }
+
+  if (topic == "koalawan/iot/kontak2") {
+    Serial.println("LED2 " +payload);
+    digitalWrite(18, payload.toInt());
+  }
+}
+
+void setup() {
+  Serial.begin(115200);
+
+  // start wifi and mqtt
+  WiFi.begin(ssid, pass);
+  client.begin("public.cloud.shiftr.io", net);
+  client.onMessage(messageReceived);
+
+  pinMode(19, OUTPUT);
+  pinMode(18, OUTPUT);
+
+  connect();
+}
+
+void loop() {
+  client.loop();
+  delay(10);
+
+  // check if connected
+  if (!client.connected()) {
+    connect();
+  }
+
+  // publish a message roughly every second.
+  if (millis() - lastMillis > 2000) {
+    lastMillis = millis();
+    client.publish("/koalawan/iot/temperature", String(count));
+    client.publish("/koalawan/iot/humidity", String(count));
+    count++;
+  }
+}
 
 ### Demo Proyek Smarthome dengan MQTT
 <ul>
