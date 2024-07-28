@@ -266,11 +266,104 @@ void loop()
   <li>Github: <a href="https://github.com/ages96/sistem-mikrokontroller/tree/master/smarthome-restapi">Github</a></li>
   <li>Youtube: <a href="https://www.youtube.com/watch?v=HumQUj3Oky8">Youtube</a></li>
 </ul>
-
 ## Anggota 3 : Proyek Smarthome dengan MQTT
 ### Penjelasan Proyek
+### Spesifikasi 
+
+**1. EMQX sebagai MQTT Broker**
+    -Instal dan konfigurasikan EMQX sebagai broker MQTT.
+**2. Tampilan Website dengan HTML, CSS, dan JS:**
+    -Buat halaman web yang menggunakan HTML, CSS, dan JS untuk berinteraksi dengan brokerMQTT.
+    -Buat tampilan untuk mengendalikan relay dan menampilkan data sensor.
+**3. Relay 2 Channel untuk Menyalakan LED:**
+    -Hubungkan relay 2 channel ke mikrokontroller.
+    -Buat skema rangkaian untuk menghubungkan relay ke LED.
+**4. Sensor Bebas:**
+    -Pilih sensor lain untuk digunakan (misalnya, sensor jarak atau sensor cahaya).
+    -Hubungkan sensor tersebut ke mikrokontroller dan baca datanya.
+
+#### 1. 1. EMQX sebagai MQTT Broker:
+
+**LangkaH-langkah**
+
+1.**Instalasi EMQX dan Konfigurasi:**
+  - Unduh EMQX dari situs resmi EMQX.
+  - Ikuti petunjuk instalasi yang sesuai dengan sistem operasi Anda.
+
+2.**Konfigurasi EMQX:**
+  - Buka file konfigurasi EMQX (emqx.conf) dan sesuaikan pengaturan seperti port dan 
+    pengaturan keamanan jika diperlukan.
+  - Start EMQX dengan menjalankan perintah ./emqx start atau menggunakan service manager  
+    sesuai OS Anda.
+
+### 2. Tampilan Website dengan HTML, CSS, dan JS
+
+**<HTML:/smarthome-restapi/index.html>**
+
+<html>
+<head>
+    <title>Smart Home</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <h1>Smart Home Control</h1>
+    <button id="relay1">Relay 1</button>
+    <button id="relay2">Relay 2</button>
+    <div id="sensor-data"></div>
+    <script src="scripts.js"></script>
+</body>
+</html>
+
+**CSS:/smarthome-restapi/style.css**
+
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f4f4f4;
+}
+
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+}
+
+#sensor-data {
+    margin-top: 20px;
+}
+
+**JS:/smarthome-restapi/script.js**
+
+const brokerUrl = 'ws://your-mqtt-broker-url:port';
+const clientId = 'clientId-' + Math.random().toString(16).substr(2, 8);
+const client = new Paho.MQTT.Client(brokerUrl, clientId);
+
+client.connect({onSuccess: onConnect});
+
+function onConnect() {
+    console.log("Connected to MQTT broker");
+    client.subscribe('sensor/data');
+}
+
+document.getElementById('relay1').onclick = () => {
+    client.publish('relay/control', '1');
+};
+
+document.getElementById('relay2').onclick = () => {
+    client.publish('relay/control', '2');
+};
+
+client.onMessageArrived = (message) => {
+    if (message.destinationName === 'sensor/data') {
+        document.getElementById('sensor-data').innerHTML = 'Sensor Data: ' + message.payloadString;
+    }
+};
+
+**Arduino : Wowki https://wokwi.com/projects/**
+
 ### Demo Proyek Smarthome dengan MQTT
 <ul>
   <li>Github: <a href="">Github</a></li>
   <li>Youtube: <a href="">Youtube</a></li>
+</ul>
 </ul>
